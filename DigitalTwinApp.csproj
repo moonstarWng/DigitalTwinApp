@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3296.44" />
+	<Content Include="assets\**\*.*">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="assets\js\GLTFLoader.js" />
+    <Content Remove="assets\js\OrbitControls.js" />
+    <Content Remove="assets\js\three.core.js" />
+    <Content Remove="assets\js\three.module.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="assets\js\three.core.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="assets\js\GLTFLoader.js" />
+    <EmbeddedResource Include="assets\js\OrbitControls.js" />
+    <EmbeddedResource Include="assets\js\three.core.js" />
+    <EmbeddedResource Include="assets\js\three.module.js" />
+  </ItemGroup>
+
+</Project>

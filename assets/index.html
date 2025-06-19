@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Three.js 数字孪生</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+          }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // 初始化轨道控制
+        const controls = new OrbitControls(camera, renderer.domElement);
+
+        // 添加环境光
+        const light = new THREE.AmbientLight(0xffffff, 1);
+        scene.add(light);
+
+        // 加载 GLTF 模型
+        const loader = new GLTFLoader();
+        loader.load(
+            './models/单体1＋单体+2圆柱/单体2.gltf',
+            function (gltf) {
+                const model = gltf.scene;
+                scene.add(model);
+
+                // 自动调整相机位置
+                const box = new THREE.Box3().setFromObject(model);
+                const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const fov = camera.fov * (Math.PI / 180);
+                const cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2)) * 2;
+
+                camera.position.set(center.x, center.y, center.z + cameraZ);
+                camera.lookAt(center);
+                controls.target.copy(center);
+                controls.update();
+            },
+            undefined,
+            function (error) {
+                console.error('模型加载失败:', error);
+            }
+        );
+
+        // 动画循环
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update(); // 更新轨道控制
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>
